@@ -7,7 +7,9 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -22,9 +24,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     boolean highLimit = false;      // detect high limit
     int counter = 0;                // step counter
 
+    TextView timerDisplay;
+
     TextView tvx, tvy, tvz, tvMag, tvSteps;
     private SensorManager mSensorManager;
     private Sensor mSensor;
+
+    //Define a new Timer
+    CountUpTimer timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,12 +43,38 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         tvz = findViewById(R.id.tvZ);
         tvMag = findViewById(R.id.tvMag);
         tvSteps = findViewById(R.id.tvSteps);
+        timerDisplay = findViewById(R.id.timerDisplay);
 
         // we are going to use the sensor service
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+
+        //Initialize the new timer object
+        timer = new CountUpTimer(300000) {
+            @Override
+            public void onTick(int seconds) {
+                timerDisplay.setText(String.valueOf(seconds));
+            }
+        };
     }
 
+    //Timer control Methods
+    public void doStart(View view) {
+        //Start the timer
+        timer.start();
+        //Display a simple Toast message
+        Toast.makeText(this, "Started counting", Toast.LENGTH_LONG).show();
+    }
+
+    public void doStop(View view) {
+        timer.cancel();
+        Toast.makeText(this, "Stopped Run", Toast.LENGTH_LONG).show();
+    }
+
+    public void doReset(View view) {
+        timerDisplay.setText("0");
+        Toast.makeText(this, "Reset", Toast.LENGTH_LONG).show();
+    }
 
     /*
      * When the app is brought to the foreground - using app on screen
