@@ -37,7 +37,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     //Define a new Timer
     CountUpTimer timer;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
