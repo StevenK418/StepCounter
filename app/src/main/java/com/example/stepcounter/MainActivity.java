@@ -2,14 +2,18 @@ package com.example.stepcounter;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.util.Date;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -33,6 +37,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     //Define a new Timer
     CountUpTimer timer;
 
+    Button startButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         tvMag = findViewById(R.id.tvMag);
         tvSteps = findViewById(R.id.tvSteps);
         timerDisplay = findViewById(R.id.timerDisplay);
+        startButton = findViewById(R.id.startButton);
 
         // we are going to use the sensor service
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -53,7 +60,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         timer = new CountUpTimer(300000) {
             @Override
             public void onTick(int seconds) {
-                timerDisplay.setText(String.valueOf(seconds));
+                //timerDisplay.setText(String.valueOf(seconds));
+                startButton.setText(String.valueOf(seconds));
             }
         };
     }
@@ -69,6 +77,25 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public void doStop(View view) {
         timer.cancel();
         Toast.makeText(this, "Stopped Run", Toast.LENGTH_LONG).show();
+
+        //Gather Analysis Data
+        //New controller Instance
+        AnalysisController ac = new AnalysisController();
+        //Get the date:
+        String currentDate =  ac.GetDate().toString();
+        //Get the meters travelled
+        String distance = String.valueOf(ac.GetDistance(counter));
+        //Get the calories burned
+        String calories = String.valueOf(ac.GetCalories(counter));
+
+        //Create new intent instance for the Summary Page
+        Intent summaryPage = new Intent(this, Summary.class);
+        //Pass all the analysis data to the new intent
+        summaryPage.putExtra("date", currentDate);
+        summaryPage.putExtra("distance", distance);
+        summaryPage.putExtra("calories", calories);
+        //Load up the new activity
+        startActivity(summaryPage);
     }
 
     public void doReset(View view) {
@@ -121,8 +148,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             tvSteps.setText(String.valueOf(counter));
             highLimit = false;
         }
-
-
     }
 
     @Override
