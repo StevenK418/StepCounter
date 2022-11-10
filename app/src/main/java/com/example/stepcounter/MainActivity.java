@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
-
     //Gather Analysis Data
     //New controller Instance
     public AnalysisController ac;
@@ -148,12 +147,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     {
         if(ac != null && isRunning)
         {
+            //Display the magnitude of the step
+            tvMag.setText(String.valueOf(ac.magnitude));
+
             //Pass the values of the 3 Axes to the step detect method
             boolean isStep =  ac.DetectStep(event.values[0],event.values[1],event.values[2]);
             if(isStep)
             {
                 counter++;
-                tvMag.setText(String.valueOf(ac.magnitude));
                 tvSteps.setText(String.valueOf(counter));
             }
         }
