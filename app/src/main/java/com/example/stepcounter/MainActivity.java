@@ -28,6 +28,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     TextView timerDisplay;
     TextView tvMag, tvSteps;
     Button startButton;
+    Button stopButton;
+    Button resetButton;
 
     //Declare sensor instances
     private SensorManager mSensorManager;
@@ -53,6 +55,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         tvSteps = findViewById(R.id.tvSteps);
         timerDisplay = findViewById(R.id.timerDisplay);
         startButton = findViewById(R.id.startButton);
+        stopButton = findViewById(R.id.stopButton);
+        resetButton = findViewById(R.id.resetButton);
 
         // Initialize the sensor services
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -66,6 +70,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 //startButton.setText(String.valueOf(seconds));
             }
         };
+        //Disable the stop button for now
+        stopButton.setEnabled(false);
+        //Disable the reset button for now
+        resetButton.setEnabled(false);
     }
 
     //Timer control Methods
@@ -75,8 +83,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         isRunning = true;
         //Start the timer
         timer.start();
-        //Display a simple Toast message
-        //Toast.makeText(this, "Started counting", Toast.LENGTH_LONG).show();
+
+        //Enable the stop button now we are running thr routine
+        stopButton.setEnabled(true);
+        resetButton.setEnabled(true);
     }
 
     public void doStop(View view)
