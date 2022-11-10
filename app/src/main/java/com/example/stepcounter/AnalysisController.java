@@ -10,8 +10,8 @@ public class AnalysisController
 {
 
     // experimental values for hi and lo magnitude limits
-    private final double HI_STEP = 11.0;     // upper mag limit
-    private final double LO_STEP = 8.0;      // lower mag limit
+    private final double HI_STEP = 13.0;     // upper mag limit
+    private final double LO_STEP = 8.4;      // lower mag limit
     boolean highLimit = false;      // detect high limit
 
     double magnitude = 0.0;
