@@ -14,30 +14,38 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
+
+    //Gather Analysis Data
+    //New controller Instance
+    public AnalysisController ac;
+
     //Flags (Used for state control)
     boolean isRunning;
-    int counter = 0;                // step counter
 
+    int counter = 0;
+
+    //Declare UI elements
     TextView timerDisplay;
-
     TextView tvMag, tvSteps;
+    Button startButton;
 
+    //Declare sensor instances
     private SensorManager mSensorManager;
     private Sensor mSensor;
 
     //Define a new Timer
     CountUpTimer timer;
 
-    Button startButton;
 
-    //Gather Analysis Data
-    //New controller Instance
-    public AnalysisController ac;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //Initialize the Analysis Controller instance
+        ac = new AnalysisController();
 
         //Initialize the isRunning bool to false
         isRunning = false;
@@ -48,10 +56,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         timerDisplay = findViewById(R.id.timerDisplay);
         startButton = findViewById(R.id.startButton);
 
-        //Initialize the Analysis Controller instance
-        ac = new AnalysisController();
-
-        // we are going to use the sensor service
+        // Initialize the sensor services
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
@@ -59,8 +64,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         timer = new CountUpTimer(300000) {
             @Override
             public void onTick(int seconds) {
-                //timerDisplay.setText(String.valueOf(seconds));
-                startButton.setText(String.valueOf(seconds));
+                timerDisplay.setText(String.valueOf(seconds));
+                //startButton.setText(String.valueOf(seconds));
             }
         };
     }
@@ -68,12 +73,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     //Timer control Methods
     public void doStart(View view)
     {
+        //Set isRunning Flag to true
+        isRunning = true;
         //Start the timer
         timer.start();
         //Display a simple Toast message
-        Toast.makeText(this, "Started counting", Toast.LENGTH_LONG).show();
-        //Set isRunning Flag to true
-        isRunning = true;
+        //Toast.makeText(this, "Started counting", Toast.LENGTH_LONG).show();
     }
 
     public void doStop(View view)
@@ -133,17 +138,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onSensorChanged(SensorEvent event)
     {
-        //Ensure the analysis controller is not null before passing data
-        if(isRunning && ac != null)
+        if(ac != null && isRunning)
         {
             //Pass the values of the 3 Axes to the step detect method
-            boolean isStep =  ac.DetectStep(event.values[0], event.values[1], event.values[2]);
-
+            boolean isStep =  ac.DetectStep(event.values[0],event.values[1],event.values[2]);
             if(isStep)
             {
                 counter++;
                 tvMag.setText(String.valueOf(ac.magnitude));
-                tvSteps.setText(counter);
+                tvSteps.setText(String.valueOf(counter));
             }
         }
     }
@@ -153,5 +156,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     {
         // not used
     }
+
 
 }

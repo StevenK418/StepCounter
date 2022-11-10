@@ -24,20 +24,25 @@ public class AnalysisController
     //Detects whether step occurred using values from Accelerometer
     public boolean DetectStep(float x, float y, float z)
     {
-        // get a magnitude number using Pythagorus's Theorem
+        //Define a boolean to store result
+        boolean isStep = false;
+
+        // Use Pythagorean theorem to get magnitude
         magnitude = round(Math.sqrt((x*x) + (y*y) + (z*z)), 2);
 
-        //Calculate the magnitude
+        //Calculate the magnitude by checking against constants
         if ((magnitude > HI_STEP) && (highLimit == false))
         {
             highLimit = true;
+            isStep = false;
         }
-        if ((magnitude < LO_STEP) && (highLimit == true))
+        else if((magnitude < LO_STEP) && (highLimit == true))
         {
             highLimit = false;
+            isStep = true;
         }
 
-        return highLimit;
+        return isStep;
     }
 
 
