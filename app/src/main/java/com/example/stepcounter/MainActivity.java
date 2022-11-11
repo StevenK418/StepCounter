@@ -1,5 +1,7 @@
 package com.example.stepcounter;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.app.Activity;
 import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -10,16 +12,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.os.Handler;
+import java.util.Locale;
 
 
-public class MainActivity extends AppCompatActivity implements SensorEventListener {
+public class MainActivity extends Activity implements SensorEventListener {
 
     //Gather Analysis Data
     //New controller Instance
     public AnalysisController ac;
-
-    //Flags (Used for state control)
-    boolean isRunning;
 
     int counter = 0;
 
@@ -34,19 +35,25 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private SensorManager mSensorManager;
     private Sensor mSensor;
 
-    //Define a new Timer
-    CountUpTimer timer;
+    // Time variables used by timer
+    int seconds = 0;
+    String time = "";
+
+    // Is the timer currently running?
+    boolean running;
+    boolean wasRunning;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         //Initialize the Analysis Controller instance
         ac = new AnalysisController();
 
-        //Initialize the isRunning bool to false
-        isRunning = false;
+        //Initialize the running bool to false
+        running = false;
 
         //Initialize the UI elements
         tvMag = findViewById(R.id.tvMag);
@@ -60,27 +67,95 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
-        //Initialize the new timer object
-        timer = new CountUpTimer(300000) {
-            @Override
-            public void onTick(int seconds) {
-                timerDisplay.setText(String.valueOf(seconds));
-                //startButton.setText(String.valueOf(seconds));
-            }
-        };
         //Disable the stop button for now
         stopButton.setEnabled(false);
         //Disable the reset button for now
         resetButton.setEnabled(false);
+
+        if (savedInstanceState != null)
+        {
+            // Get the previous state of the stopwatch
+            // if the activity has been
+            // destroyed and recreated.
+            seconds = savedInstanceState.getInt("seconds");
+            running = savedInstanceState.getBoolean("running");
+            wasRunning = savedInstanceState.getBoolean("wasRunning");
+        }
+        //Run the timer routine
+        runTimer();
+    }
+
+    // Save the current
+    // state of the stopwatch if it's getting destroyed
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState)
+    {
+        savedInstanceState.putInt("seconds", seconds);
+        savedInstanceState.putBoolean("running", running);
+        savedInstanceState.putBoolean("wasRunning", wasRunning);
+    }
+
+    // Sets the NUmber of seconds on the timer.
+    // The runTimer() method uses a Handler
+    // to increment the seconds and
+    // update the text view.
+    private void runTimer()
+    {
+        // Get the text view.
+        final TextView timeView = (TextView)findViewById(R.id.timerDisplay);
+
+        // Creates a new Handler
+        final Handler handler = new Handler();
+
+        // Call the post() method,
+        // passing in a new Runnable.
+        // The post() method processes
+        // code without a delay,
+        // so the code in the Runnable
+        // will run almost immediately.
+        handler.post(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                //Divide up the time values accordingly
+                int hours = seconds / 3600;
+                int minutes = (seconds % 3600) / 60;
+                int secs = seconds % 60;
+
+                //Get the time as a formatted string of Hours, Mins and Seconds.
+                time = String.format(Locale.getDefault(), "%d:%02d:%02d", hours, minutes, secs);
+
+                // Set the text view text.
+                timeView.setText(time);
+
+               //If active, increment the seconds
+                if (running)
+                {
+                    seconds++;
+                }
+
+                // Run code once more with one second delay.
+                handler.postDelayed(this, 1000);
+            }
+        });
     }
 
     //Timer control Methods
     public void doStart(View view)
     {
-        //Set isRunning Flag to true
-        isRunning = true;
-        //Start the timer
-        timer.start();
+        if(!running)
+        {
+            //Set running Flag to true
+            running = true;
+            startButton.setText("PAUSE");
+        }
+        else
+        {
+            Pause();
+            startButton.setText("RESUME");
+        }
+
 
         //Enable the stop button now we are running thr routine
         stopButton.setEnabled(true);
@@ -91,14 +166,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     {
         if(ac != null)
         {
-            //Reset isRunning flag to false
-            isRunning = false;
-
-            //Cancel the timer instance
-            timer.cancel();
-
-            //Display message via toast to inform user detection has stopped.
-            Toast.makeText(this, "Stopped Run", Toast.LENGTH_LONG).show();
+            //Reset Running flag to false
+            running = false;
 
             //Get the date:
             String currentDate = ac.GetDate().toString();
@@ -113,38 +182,48 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             summaryPage.putExtra("date", currentDate);
             summaryPage.putExtra("distance", distance);
             summaryPage.putExtra("calories", calories);
+            //Lastly, pass over the time
+            summaryPage.putExtra("time", time);
             //Load up the new activity
             startActivity(summaryPage);
         }
     }
 
-    public void doReset(View view) {
-        timerDisplay.setText("0");
-        Toast.makeText(this, "Reset", Toast.LENGTH_LONG).show();
+    //Manual pause mode allowing the app to be paused.
+    public void Pause()
+    {
+        wasRunning = running;
+        running = false;
     }
 
-    /*
-     * When the app is brought to the foreground - using app on screen
-     */
-    protected void onResume() {
+    public void doReset(View view)
+    {
+        running = false;
+        seconds = 0;
+    }
+
+    // When the app is in focus
+    protected void onResume()
+    {
         super.onResume();
-        // turn on the sensor
-        mSensorManager.registerListener(this, mSensor,
-                SensorManager.SENSOR_DELAY_NORMAL);
+        // Reactivate the sensor
+        mSensorManager.registerListener(this, mSensor,SensorManager.SENSOR_DELAY_NORMAL);
     }
 
-    /*
-     * App running but not on screen - in the background
-     */
-    protected void onPause() {
+    //When app is running but not in focus
+    protected void onPause()
+    {
         super.onPause();
+        //Deactivate the sensor (Optimization)
         mSensorManager.unregisterListener(this);    // turn off listener to save power
+        wasRunning = running;
+        running = false;
     }
 
     @Override
     public void onSensorChanged(SensorEvent event)
     {
-        if(ac != null && isRunning)
+        if(ac != null && running)
         {
             //Display the magnitude of the step
             tvMag.setText(String.valueOf(ac.magnitude));

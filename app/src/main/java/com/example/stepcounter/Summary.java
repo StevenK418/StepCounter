@@ -13,11 +13,13 @@ public class Summary extends AppCompatActivity {
     TextView dateDisplay;
     TextView distanceDisplay;
     TextView caloriesDisplay;
+    TextView timeDisplay;
 
     //Summary Data
     String date;
     String distance;
     String calories;
+    String time;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -29,6 +31,7 @@ public class Summary extends AppCompatActivity {
         dateDisplay = findViewById(R.id.dateDisplay);
         distanceDisplay = findViewById(R.id.distanceDisplay);
         caloriesDisplay = findViewById(R.id.caloriesDisplay);
+        timeDisplay = findViewById(R.id.timeDisplay);
 
         //Create new intent instance
         Intent intent = getIntent();
@@ -44,6 +47,10 @@ public class Summary extends AppCompatActivity {
         //Get the distance from the homepage and display
         distance = intent.getStringExtra("distance");
         distanceDisplay.setText(distance);
+
+        //Get the time from the Homepage and display
+        time = intent.getStringExtra("time");
+        timeDisplay.setText(time);
     }
 
     //Returns to the Home page
