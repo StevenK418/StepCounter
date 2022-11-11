@@ -156,7 +156,6 @@ public class MainActivity extends Activity implements SensorEventListener {
             startButton.setText("RESUME");
         }
 
-
         //Enable the stop button now we are running thr routine
         stopButton.setEnabled(true);
         resetButton.setEnabled(true);
