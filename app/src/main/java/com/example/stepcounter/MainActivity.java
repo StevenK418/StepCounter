@@ -13,10 +13,13 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.os.Handler;
+
+import java.text.SimpleDateFormat;
 import java.util.Locale;
+import java.util.Date;
 
 
-public class MainActivity extends Activity implements SensorEventListener {
+public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
     //Gather Analysis Data
     //New controller Instance
@@ -93,6 +96,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         savedInstanceState.putInt("seconds", seconds);
         savedInstanceState.putBoolean("running", running);
         savedInstanceState.putBoolean("wasRunning", wasRunning);
+        super.onSaveInstanceState(savedInstanceState);
     }
 
     // Sets the NUmber of seconds on the timer.
@@ -149,16 +153,20 @@ public class MainActivity extends Activity implements SensorEventListener {
             //Set running Flag to true
             running = true;
             startButton.setText("PAUSE");
+            //Enable the stop button now we are running thr routine
+            stopButton.setEnabled(true);
+            resetButton.setEnabled(true);
         }
         else
         {
             Pause();
             startButton.setText("RESUME");
+            //Disable the stop button now we are running thr routine
+            stopButton.setEnabled(false);
+            resetButton.setEnabled(false);
         }
 
-        //Enable the stop button now we are running thr routine
-        stopButton.setEnabled(true);
-        resetButton.setEnabled(true);
+
     }
 
     public void doStop(View view)
@@ -168,8 +176,9 @@ public class MainActivity extends Activity implements SensorEventListener {
             //Reset Running flag to false
             running = false;
 
-            //Get the date:
-            String currentDate = ac.GetDate().toString();
+            //Get the date and format it
+            SimpleDateFormat DateFor = new SimpleDateFormat("MM/dd/yyyy");
+            String currentDate = DateFor.format(ac.GetDate());
             //Get the meters travelled
             String distance = String.valueOf(ac.GetDistance(counter));
             //Get the calories burned
