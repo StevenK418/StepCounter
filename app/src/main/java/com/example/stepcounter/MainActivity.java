@@ -30,6 +30,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     //Declare UI elements
     TextView timerDisplay;
     TextView tvMag, tvSteps;
+    TextView caloriesDisplay;
+    TextView distanceDisplay;
     Button startButton;
     Button stopButton;
     Button resetButton;
@@ -65,14 +67,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         startButton = findViewById(R.id.startButton);
         stopButton = findViewById(R.id.stopButton);
         resetButton = findViewById(R.id.resetButton);
+        caloriesDisplay = findViewById(R.id.calorieDisplay);
+        distanceDisplay = findViewById(R.id.homedistanceDisplay);
 
         // Initialize the sensor services
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
-        //Disable the stop button for now
+        // Disable the stop button for now
         stopButton.setEnabled(false);
-        //Disable the reset button for now
+        // Disable the reset button for now
         resetButton.setEnabled(false);
 
         if (savedInstanceState != null)
@@ -133,7 +137,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 // Set the text view text.
                 timeView.setText(time);
 
-               //If active, increment the seconds
+                //Update the calories & Distance
+                DisplayCalories();
+                DisplayDistance();
+
+                //If active, increment the seconds
                 if (running)
                 {
                     seconds++;
@@ -244,6 +252,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 tvSteps.setText(String.valueOf(counter));
             }
         }
+    }
+
+    //Displays the Calories on the Main Page
+    public void DisplayCalories()
+    {
+        String calories = String.valueOf(ac.GetCalories(counter));
+        caloriesDisplay.setText(calories);
+    }
+
+    //Displays the Distance on the main page
+    public void DisplayDistance()
+    {
+        String distance = String.valueOf(ac.GetDistance(counter));
+        distanceDisplay.setText(distance);
     }
 
     @Override
