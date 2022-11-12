@@ -112,15 +112,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         // Get the text view.
         final TextView timeView = (TextView)findViewById(R.id.timerDisplay);
 
-        // Creates a new Handler
+        // Create a new Handler
         final Handler handler = new Handler();
 
-        // Call the post() method,
-        // passing in a new Runnable.
-        // The post() method processes
-        // code without a delay,
-        // so the code in the Runnable
-        // will run almost immediately.
+        // Call the post() method which runs on a delay.
         handler.post(new Runnable()
         {
             @Override

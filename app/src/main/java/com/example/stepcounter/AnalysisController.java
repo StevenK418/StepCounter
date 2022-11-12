@@ -5,14 +5,12 @@
 */
 package com.example.stepcounter;
 import java.util.Date;
-import java.text.SimpleDateFormat;
 
 public class AnalysisController
 {
-
     // experimental values for hi and lo magnitude limits
-    private final double HI_STEP = 13.0;     // upper mag limit
-    private final double LO_STEP = 8.4;      // lower mag limit
+    private final double STEP_MAX = 11.6;     // upper mag limit
+    private final double STEP_MIN = 8.2;      // lower mag limit
     boolean highLimit = false;      // detect high limit
 
     double magnitude = 0.0;
@@ -32,12 +30,12 @@ public class AnalysisController
         magnitude = round(Math.sqrt((x*x) + (y*y) + (z*z)), 2);
 
         //Calculate the magnitude by checking against constants
-        if ((magnitude > HI_STEP) && (highLimit == false))
+        if ((magnitude > STEP_MAX) && (highLimit == false))
         {
             highLimit = true;
             isStep = false;
         }
-        else if((magnitude < LO_STEP) && (highLimit == true))
+        else if((magnitude < STEP_MIN) && (highLimit == true))
         {
             highLimit = false;
             isStep = true;
@@ -45,7 +43,6 @@ public class AnalysisController
 
         return isStep;
     }
-
 
     //Returns the current Date of the run
     public Date GetDate()

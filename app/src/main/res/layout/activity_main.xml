@@ -74,7 +74,8 @@
         android:text="0"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-        android:textColor="#9C27B0"
+        android:textColor="#333333"
+        android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@+id/guideline3"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
@@ -160,13 +161,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="STEP COUNTER"
-        android:textSize="20sp"
+        android:textColor="#2B2A2A"
+        android:textSize="34sp"
         android:textStyle="bold"
         android:typeface="monospace"
         app:layout_constraintBottom_toTopOf="@+id/guideline4"
-        app:layout_constraintEnd_toStartOf="@+id/guideline3"
-        app:layout_constraintStart_toStartOf="@+id/guideline2"
-        app:layout_constraintTop_toTopOf="@+id/guideline5" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline5"
+        app:layout_constraintVertical_bias="0.555" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline11"
