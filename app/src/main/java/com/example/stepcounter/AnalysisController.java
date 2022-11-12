@@ -58,14 +58,14 @@ public class AnalysisController
     //Calculates meters covered
     public float GetDistance(int steps)
     {
-        float meters = steps * 0.8f;
+        float meters = (float)round(steps * 0.8f, 2);
         return meters;
     }
 
     //Calculate calories burned
     public float GetCalories(int steps)
     {
-        float caloriesBurned = steps * 0.04f;
+        float caloriesBurned = (float)round(steps * 0.04f, 2);
         return caloriesBurned;
     }
 
@@ -73,7 +73,6 @@ public class AnalysisController
     public static double round(double value, int places)
     {
         if (places < 0) throw new IllegalArgumentException();
-
         long factor = (long) Math.pow(10, places);
         value = value * factor;
         long tmp = Math.round(value);

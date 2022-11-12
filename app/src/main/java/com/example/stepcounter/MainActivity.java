@@ -273,6 +273,4 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     {
         // not used
     }
-
-
 }
