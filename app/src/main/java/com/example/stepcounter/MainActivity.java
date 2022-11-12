@@ -165,8 +165,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             stopButton.setEnabled(false);
             resetButton.setEnabled(false);
         }
-
-
     }
 
     public void doStop(View view)
