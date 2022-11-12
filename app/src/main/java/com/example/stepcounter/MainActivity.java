@@ -103,10 +103,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         super.onSaveInstanceState(savedInstanceState);
     }
 
-    // Sets the NUmber of seconds on the timer.
-    // The runTimer() method uses a Handler
-    // to increment the seconds and
-    // update the text view.
+   //Runs the routine and increments the seconds values
     private void runTimer()
     {
         // Get the text view.
