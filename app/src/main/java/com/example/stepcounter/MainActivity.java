@@ -177,7 +177,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             running = false;
 
             //Get the date and format it
+            //Format Date
             SimpleDateFormat DateFor = new SimpleDateFormat("MM/dd/yyyy");
+            //Feed the raw date value into the format method and store
             String currentDate = DateFor.format(ac.GetDate());
             //Get the meters travelled
             String distance = String.valueOf(ac.GetDistance(counter));
